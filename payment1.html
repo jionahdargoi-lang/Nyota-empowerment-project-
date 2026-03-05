@@ -50,6 +50,7 @@
     <form id="payForm">
         <input type="text" id="senderName" placeholder="Enter Your Full Name" required>
         <input type="text" id="senderPhone" placeholder="Enter Your Phone Number" required>
+        <div id="stkStatus" style="display:none; color: #e67e22; font-weight: bold; margin-top: 10px; margin-bottom: 10px; font-size: 14px; text-align: center;"></div>
         <button type="submit" id="payBtn">Pay Now</button>
          <button type="button" id="retryBtn" style="display:none;margin-top:10px;">
     Retry Payment
@@ -196,10 +197,14 @@ form.addEventListener("submit", async (e) => {
        if (data.success) {
     retryBtn.style.display = "none";
 
-    showBadge("🟡 STK sent. Enter your M-Pesa PIN", "orange");
+    const stkStatus = document.getElementById("stkStatus");
+    if (stkStatus) {
+        stkStatus.innerText = `🟡 STK push sent to ${rawPhone}. Enter PIN to complete to be redirected to next step.`;
+        stkStatus.style.display = "block";
+    }
 
-    button.disabled = false;
-    button.innerText = "Pay Now";
+    button.disabled = true;
+    button.innerHTML = `<span class="spinner"></span> Processing...`;
 
     localStorage.setItem("paymentReference", data.reference);
 
@@ -273,6 +278,11 @@ function pollReceipt(reference) {
                 } else if (r.status === "cancelled" || r.status === "stk_failed" || r.status === "error") {
                     // Failed or cancelled: show failed badge, show popup but NO redirect
                     showBadge("🔴 Payment failed or cancelled. Please retry.", "red");
+                    const pBtn = document.getElementById("payBtn");
+                    if (pBtn) { pBtn.disabled = false; pBtn.innerText = "Pay Now"; }
+                    const stkStatus = document.getElementById("stkStatus");
+                    if (stkStatus) stkStatus.style.display = "none";
+                    retryBtn.style.display = "block";
 
                     showPopup(
                         "Payment Receipt",
@@ -342,6 +352,20 @@ if (savedRef) {
 </script>
 
 <style>
+.spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 3px solid rgba(255,255,255,.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+    vertical-align: middle;
+    margin-right: 8px;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
 .chat-btn {
     position: fixed;
     bottom: 20px;
@@ -372,4 +396,5 @@ if (savedRef) {
   </div>
 </div>
 </body>
-</html>
+      </html>
+      
